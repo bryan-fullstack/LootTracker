@@ -1,80 +1,118 @@
-"use client"
+'use client';
 
-import { useState, type FormEvent } from "react"
-import { Shield, User, Mail, Lock, Loader2, Gamepad2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import { createBrowserClient } from "@supabase/ssr"; 
+import { Shield, User, Loader2, Gamepad2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { useToast } from "@/hooks/use-toast"
+} from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 
+// --- MUDANÇA AQUI: Definimos a "lista de convidados" (Props) para o TypeScript ---
 interface LoginViewProps {
-  onLogin: (mode: "admin" | "guest") => void
+  onLogin?: (mode: "admin" | "guest") => void;
 }
 
-export function LoginView({ onLogin }: LoginViewProps) {
-  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false)
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const { toast } = useToast()
+export function LoginView({ onLogin }: LoginViewProps) { // Destruturamos o onLogin aqui
+  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isGuestLoading, setIsGuestLoading] = useState(false);
+  
+  const router = useRouter();
+  const { toast } = useToast();
 
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+
+  // --- LOGIN ADMINISTRADOR ---
   const handleAdminSubmit = async (e: FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
 
-    // Simula delay de autenticacao
-    await new Promise((resolve) => setTimeout(resolve, 1200))
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    // TODO: Wire up your auth logic here
-    // For now, always show the error toast as requested
-    toast({
-      variant: "destructive",
-      title: "Acesso Negado",
-      description: "You do not have permission to access here. Please log in as a Guest.",
-    })
+      if (error) throw error;
 
-    setIsLoading(false)
-    setIsAdminModalOpen(false)
-    setEmail("")
-    setPassword("")
-  }
+      toast({
+        title: "Sucesso!",
+        description: "Redirecionando para o painel...",
+      });
 
-  const handleGuestAccess = () => {
-    onLogin("guest")
-  }
+      // Avisa o componente pai que o admin logou
+      if (onLogin) onLogin("admin");
+
+      router.push("/dashboard");
+      router.refresh(); 
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: error.message || "Falha no login.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // --- LOGIN CONVIDADO ---
+  const handleGuestAccess = async () => {
+    setIsGuestLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: 'convidado@loottracker.com',
+        password: 'guest123',
+      });
+
+      if (error) throw error;
+
+      // Avisa o componente pai que o convidado logou
+      if (onLogin) onLogin("guest");
+
+      router.push("/dashboard");
+      router.refresh();
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Erro de Conexão",
+        description: "Verifica as tuas chaves do Supabase no .env.local",
+      });
+    } finally {
+      setIsGuestLoading(false);
+    }
+  };
 
   return (
     <div className="dark min-h-screen flex items-center justify-center p-4 bg-background relative overflow-hidden">
-      {/* Subtle ambient glow */}
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-[200px] h-[200px] bg-secondary/5 rounded-full blur-3xl pointer-events-none" />
-
+      
       <div className="relative z-10 w-full max-w-md">
-        {/* Logo/Brand */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center gap-3 mb-4">
-            <Gamepad2 className="w-10 h-10 text-primary" />
+            <Gamepad2 className="w-12 h-12 text-primary" />
           </div>
-          <h1 className="text-4xl font-bold text-foreground tracking-tight">
-            LootTracker
-          </h1>
-          <p className="text-muted-foreground mt-2 text-sm">
-            Gerenciador de Despesas e Lucros Diarios
-          </p>
+          <h1 className="text-4xl font-bold text-foreground tracking-tight">LootTracker</h1>
+          <p className="text-muted-foreground mt-2 text-sm">Gerenciador de Despesas e Lucros</p>
         </div>
 
-        {/* Access Buttons */}
         <div className="flex flex-col gap-4">
           <Button
             onClick={() => setIsAdminModalOpen(true)}
-            className="w-full h-14 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90 border border-primary/50 shadow-[0_0_20px_rgba(0,229,255,0.15)] hover:shadow-[0_0_30px_rgba(0,229,255,0.25)] transition-all duration-300"
+            className="w-full h-14 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_20px_rgba(0,229,255,0.15)]"
           >
             <Shield className="w-5 h-5 mr-2" />
             Admin Access
@@ -82,88 +120,35 @@ export function LoginView({ onLogin }: LoginViewProps) {
 
           <Button
             onClick={handleGuestAccess}
+            disabled={isGuestLoading}
             variant="outline"
-            className="w-full h-14 text-base font-semibold border-border bg-card hover:bg-muted text-foreground hover:text-primary transition-all duration-300"
+            className="w-full h-14 text-base font-semibold"
           >
-            <User className="w-5 h-5 mr-2" />
-            Guest Access
+            {isGuestLoading ? <Loader2 className="animate-spin" /> : <><User className="w-5 h-5 mr-2" /> Guest Access</>}
           </Button>
         </div>
-
-        {/* Footer hint */}
-        <p className="text-center text-muted-foreground text-xs mt-8">
-          Acesse como convidado para visualizar o dashboard
-        </p>
       </div>
 
-      {/* Admin Login Modal */}
       <Dialog open={isAdminModalOpen} onOpenChange={setIsAdminModalOpen}>
-        <DialogContent className="dark bg-card border-border sm:max-w-md">
+        <DialogContent className="dark bg-card border-border">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-foreground">
-              <Shield className="w-5 h-5 text-primary" />
-              Acesso Administrativo
-            </DialogTitle>
-            <DialogDescription className="text-muted-foreground">
-              Insira suas credenciais para acessar o painel de administracao
-            </DialogDescription>
+            <DialogTitle>Acesso Administrativo</DialogTitle>
           </DialogHeader>
-
-          <form onSubmit={handleAdminSubmit} className="space-y-4 mt-2">
+          <form onSubmit={handleAdminSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-foreground text-sm">
-                Email
-              </Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@loottracker.com"
-                  required
-                  className="pl-10 bg-input border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary/20"
-                />
-              </div>
+              <Label>Email</Label>
+              <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
             </div>
-
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-foreground text-sm">
-                Senha
-              </Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  minLength={6}
-                  className="pl-10 bg-input border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary/20"
-                />
-              </div>
+              <Label>Senha</Label>
+              <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
             </div>
-
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="w-full h-11 font-semibold bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-all duration-300"
-            >
-              {isLoading ? (
-                <span className="flex items-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Verificando...
-                </span>
-              ) : (
-                "Login"
-              )}
+            <Button type="submit" disabled={isLoading} className="w-full">
+              {isLoading ? "Verificando..." : "Entrar"}
             </Button>
           </form>
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }
