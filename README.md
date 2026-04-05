@@ -1,35 +1,106 @@
-# portifolio-rpg
+# 🎮 LootTracker - Dashboard
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [v0](https://v0.app).
+![Next.js](https://img.shields.io/badge/Next.js-000?style=for-the-badge&logo=next.js&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 
-## Built with v0
+> **LootTracker** é um ecossistema de gerenciamento financeiro inteligente projetado para pessoas que precisam monitorar lucros (loots) e despesas de seus automoveis em tempo real com uma interface futurista e alta performance.
 
-This repository is linked to a [v0](https://v0.app) project. You can continue developing by visiting the link below -- start new chats to make changes, and v0 will push commits directly to this repo. Every merge to `main` will automatically deploy.
+---
 
-[Continue working on v0 →](https://v0.app/chat/projects/prj_WGjWzJ9x0wJ4WJOCACXzvW3EFcBj)
+## ✨ Funcionalidades Core
 
-## Getting Started
+### 🔐 Sistema de Acesso Dual
+* **Modo Admin:** Controle total. Inserção de dados, exclusão de registros e atualização de saldo.
+* **Modo Visitante:** Acesso seguro para visualização (Read-Only). Perfeito para visualização, permitindo que usuários vejam o sistema em funcionamento sem comprometer a integridade do banco de dados real.
 
-First, run the development server:
+### 📊 Análise de Desempenho Inteligente
+* **Filtros Avançados:** Visualize dados de **Hoje, 7 Dias, 30 Dias** ou o histórico completo.
+* **Gráficos Neon:** Visualização de tendências usando **Recharts**, mostrando a curva de lucros vs. despesas com áreas degradê estilizadas.
+* **Cálculos Dinâmicos:** Cards de resumo que se recalculam instantaneamente baseados nos filtros de data aplicados.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+### 🛠️ Gestão de Dados (CRUD)
+* Registro categorizado (Gasolina, Manutenção, Lucros Diários).
+* Histórico detalhado com formatação de data brasileira.
+* Exclusão de registros com **Modal de Confirmação Estilizado** para evitar ações acidentais.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 📱 Experiência Mobile (PWA)
+* Totalmente responsivo e otimizado para celulares.
+* Cabeçalho inteligente que adapta botões para ícones em telas pequenas.
+* Pronto para ser adicionado à tela de início como um aplicativo nativo.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-## Learn More
+## 🚀 Tech Stack
 
-To learn more, take a look at the following resources:
+* **Framework:** [Next.js 14/15](https://nextjs.org/) (App Router)
+* **Banco de Dados:** [Supabase](https://supabase.com/) (PostgreSQL)
+* **Autenticação:** Supabase Auth com persistência de sessão.
+* **Estilização:** Tailwind CSS + Shadcn/UI.
+* **Gráficos:** Recharts.
+* **Ícones:** Lucide React.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [v0 Documentation](https://v0.app/docs) - learn about v0 and how to use it.
+---
 
-<a href="https://v0.app/chat/api/kiro/clone/bryan-plsql/portifolio-rpg" alt="Open in Kiro"><img src="https://pdgvvgmkdvyeydso.public.blob.vercel-storage.com/open%20in%20kiro.svg?sanitize=true" /></a>
+## 🛠️ Configuração e Instalação
+
+1.  **Clone o repositório:**
+    ```bash
+    git clone [https://github.com/seu-usuario/loottracker.git](https://github.com/bryan-fullstack/loottracker.git)
+    ```
+
+2.  **Instale as dependências:**
+    ```bash
+    npm install
+    ```
+
+3.  **Configure as variáveis de ambiente (.env.local):**
+    ```env
+    NEXT_PUBLIC_SUPABASE_URL=sua_url_do_supabase
+    NEXT_PUBLIC_SUPABASE_ANON_KEY=sua_chave_anon_do_supabase
+    ```
+
+4.  **Inicie o servidor de desenvolvimento:**
+    ```bash
+    npm run dev
+    ```
+
+---
+
+## 🛡️ Segurança (RLS)
+
+O projeto utiliza **Row Level Security (RLS)** no Supabase. Isso garante que, mesmo que alguém tente burlar o frontend, o banco de dados só permite escritas se o usuário estiver autenticado com o e-mail administrativo configurado. 
+
+---
+
+## 📸 Preview do Projeto
+
+<div align="center">
+  <table>
+    <tr>
+      <td><img src="https://github.com/user-attachments/assets/a538c14e-f4f7-4995-a089-cc2786f80d09" width="250px" /></td>
+      <td><img src="https://github.com/user-attachments/assets/9f04a3df-b3f6-4d7c-a6c6-650a95cc6c9b" width="250px" /></td>
+      <td><img src="https://github.com/user-attachments/assets/b48ec1c8-c96c-432b-90d2-6e6c004133ea" width="250px" /></td>
+    </tr>
+  </table>
+</div>
+
+---
+
+## 💡 Pensamento
+
+> "A curiosidade é o motor que impulsiona o conhecimento, mas é a execução que transforma o loot em legado." 🚀
+
+---
+
+## 📬 Contato
+
+Se você gostou deste projeto ou quer trocar uma ideia sobre desenvolvimento, sinta-se à vontade para me chamar:
+
+* **📧 Gmail:** [bryand.720@gmail.com]
+* **🔗 LinkedIn:** [www.linkedin.com/in/bryan-daniel-pereira-b5a3241b7]
+
+---
+
+Criado com amor ❤️ por **Bryan Pereira**
