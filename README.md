@@ -88,6 +88,12 @@ O projeto utiliza **Row Level Security (RLS)** no Supabase. Isso garante que, me
 
 ---
 
+## 🚀 Live Demo
+
+Acesse o projeto online: 🔗 [**VISITAR LOOTTRACKER**](https://loot-tracker-seven.vercel.app/dashboard)
+
+---
+
 ## 💡 Pensamento
 
 > "A curiosidade é o motor que impulsiona o conhecimento, mas é a execução que transforma o loot em legado." 🚀
