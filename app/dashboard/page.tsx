@@ -151,33 +151,66 @@ export default function DashboardPage() {
           </div>
         </header>
 
-        {/* ÁREA DE INSERÇÃO */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          <div className="bg-card/30 border border-border rounded-2xl p-6 backdrop-blur-sm">
-             <div className="flex items-center gap-3 mb-4"><Fuel className="w-5 h-5 text-amber-500" /><h3 className="font-semibold">Gasolina</h3></div>
-             <div className="space-y-3">
-                <Input type="number" placeholder="R$ 0,00" value={gasAmount} onChange={(e) => setGasAmount(e.target.value)} disabled={!isAdmin} />
-                <Input placeholder="Descrição" value={gasDesc} onChange={(e) => setGasDesc(e.target.value)} disabled={!isAdmin} />
-                <Button className="w-full bg-card hover:bg-muted border border-border" disabled={isGasLoading || !isAdmin} onClick={() => handleTransaction('expense', 'Gasolina', gasAmount, gasDesc, setIsGasLoading, () => {setGasAmount(''); setGasDesc('')})}>Registrar</Button>
-             </div>
-          </div>
-          <div className="bg-card/30 border border-border rounded-2xl p-6 backdrop-blur-sm">
-             <div className="flex items-center gap-3 mb-4"><Wrench className="w-5 h-5 text-rose-500" /><h3 className="font-semibold">Manutenção</h3></div>
-             <div className="space-y-3">
-                <Input type="number" placeholder="R$ 0,00" value={manAmount} onChange={(e) => setManAmount(e.target.value)} disabled={!isAdmin} />
-                <Input placeholder="Descrição" value={manDesc} onChange={(e) => setManDesc(e.target.value)} disabled={!isAdmin} />
-                <Button className="w-full bg-card hover:bg-muted border border-border" disabled={isManLoading || !isAdmin} onClick={() => handleTransaction('expense', 'Manutenção', manAmount, manDesc, setIsManLoading, () => {setManAmount(''); setManDesc('')})}>Registrar</Button>
-             </div>
-          </div>
-          <div className="bg-card/30 border border-border rounded-2xl p-6 backdrop-blur-sm">
-             <div className="flex items-center gap-3 mb-4"><TrendingUp className="w-5 h-5 text-emerald-500" /><h3 className="font-semibold">Lucros Diários</h3></div>
-             <div className="space-y-3">
-                <Input type="number" placeholder="R$ 0,00" value={lucroAmount} onChange={(e) => setLucroAmount(e.target.value)} disabled={!isAdmin} />
-                <Input placeholder="Descrição" value={lucroDesc} onChange={(e) => setLucroDesc(e.target.value)} disabled={!isAdmin} />
-                <Button className="w-full bg-card hover:bg-muted border border-border" disabled={isLucroLoading || !isAdmin} onClick={() => handleTransaction('income', 'Lucro Diário', lucroAmount, lucroDesc, setIsLucroLoading, () => {setLucroAmount(''); setLucroDesc('')})}>Registrar</Button>
-             </div>
-          </div>
-        </div>
+        {/* ÁREA DE INSERÇÃO COM BOTÕES COLORIDOS */}
+<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+  
+  {/* Card Gasolina */}
+  <div className="bg-card/30 border border-border rounded-2xl p-6 backdrop-blur-sm">
+    <div className="flex items-center gap-3 mb-6">
+      <Fuel className="w-5 h-5 text-amber-500" />
+      <h3 className="font-semibold text-lg">Gasolina</h3>
+    </div>
+    <div className="space-y-4">
+      <Input type="number" step="0.01" placeholder="R$ 0,00" value={gasAmount} onChange={(e) => setGasAmount(e.target.value)} disabled={!isAdmin} />
+      <Input placeholder="Descrição" value={gasDesc} onChange={(e) => setGasDesc(e.target.value)} disabled={!isAdmin} />
+      <Button 
+        className="w-full bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/50 text-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.1)] transition-all duration-300" 
+        disabled={isGasLoading || !isAdmin}
+        onClick={() => handleTransaction('expense', 'Gasolina', gasAmount, gasDesc, setIsGasLoading, () => { setGasAmount(''); setGasDesc(''); })}
+      >
+        {isGasLoading ? <Loader2 className="animate-spin w-4 h-4" /> : "Registrar Despesa"}
+      </Button>
+    </div>
+  </div>
+
+  {/* Card Manutenção */}
+  <div className="bg-card/30 border border-border rounded-2xl p-6 backdrop-blur-sm">
+    <div className="flex items-center gap-3 mb-6">
+      <Wrench className="w-5 h-5 text-rose-500" />
+      <h3 className="font-semibold text-lg">Manutenção</h3>
+    </div>
+    <div className="space-y-4">
+      <Input type="number" step="0.01" placeholder="R$ 0,00" value={manAmount} onChange={(e) => setManAmount(e.target.value)} disabled={!isAdmin} />
+      <Input placeholder="Descrição" value={manDesc} onChange={(e) => setManDesc(e.target.value)} disabled={!isAdmin} />
+      <Button 
+        className="w-full bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/50 text-rose-500 shadow-[0_0_15px_rgba(244,63,94,0.1)] transition-all duration-300"
+        disabled={isManLoading || !isAdmin}
+        onClick={() => handleTransaction('expense', 'Manutenção', manAmount, manDesc, setIsManLoading, () => { setManAmount(''); setManDesc(''); })}
+      >
+        {isManLoading ? <Loader2 className="animate-spin w-4 h-4" /> : "Registrar Despesa"}
+      </Button>
+    </div>
+  </div>
+
+  {/* Card Lucros */}
+  <div className="bg-card/30 border border-border rounded-2xl p-6 backdrop-blur-sm">
+    <div className="flex items-center gap-3 mb-6">
+      <TrendingUp className="w-5 h-5 text-emerald-500" />
+      <h3 className="font-semibold text-lg">Lucros Diários</h3>
+    </div>
+    <div className="space-y-4">
+      <Input type="number" step="0.01" placeholder="R$ 0,00" value={lucroAmount} onChange={(e) => setLucroAmount(e.target.value)} disabled={!isAdmin} />
+      <Input placeholder="Descrição" value={lucroDesc} onChange={(e) => setLucroDesc(e.target.value)} disabled={!isAdmin} />
+      <Button 
+        className="w-full bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/50 text-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.1)] transition-all duration-300"
+        disabled={isLucroLoading || !isAdmin}
+        onClick={() => handleTransaction('income', 'Lucro Diário', lucroAmount, lucroDesc, setIsLucroLoading, () => { setLucroAmount(''); setLucroDesc(''); })}
+      >
+        {isLucroLoading ? <Loader2 className="animate-spin w-4 h-4" /> : "Registrar Lucro"}
+      </Button>
+    </div>
+  </div>
+</div>
 
         {!isAdmin && (
           <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 flex items-center justify-center gap-3 mb-10"><ShieldAlert className="w-5 h-5 text-primary shrink-0" /><p className="text-sm text-primary">Modo visitante: somente visualização por segurança.</p></div>
